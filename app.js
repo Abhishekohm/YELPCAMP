@@ -6,7 +6,6 @@ const Campground = require("./models/campground");
 const methodOverride = require("method-override");
 const ExpressError = require("./utility/ExpressError");
 const ejsMate = require("ejs-mate");
-const joi = require("joi");
 const {
   campgroundSchema,
   reviewValSchema,
@@ -14,7 +13,6 @@ const {
 const reviewSchema = require("./models/review");
 
 const catchAsync = require("./utility/catchAsync");
-const campground = require("./models/campground");
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
@@ -46,8 +44,8 @@ app.get("/", (req, res) => {
 app.get(
   "/campground",
   catchAsync(async (req, res) => {
-    const infos = await Campground.find({});
-    res.render("campground", { infos });
+    const campgrounds = await Campground.find({});
+    res.render("campground", { campgrounds });
   })
 );
 
@@ -78,9 +76,9 @@ app.post(
   "/campground",
   validateForm,
   catchAsync(async (req, res, next) => {
-    const data = new Campground(req.body);
-    await data.save();
-    res.redirect(`campground/${data._id}`);
+    const campground = new Campground(req.body);
+    await campground.save();
+    res.redirect(`campground/${campground._id}`);
   })
 );
 
@@ -98,8 +96,8 @@ app.get(
   "/campground/:id/edit",
   catchAsync(async (req, res, next) => {
     const id = req.params.id;
-    const data = await Campground.findById(id);
-    res.render("edit", { data });
+    const campground = await Campground.findById(id);
+    res.render("edit", { campground });
   })
 );
 

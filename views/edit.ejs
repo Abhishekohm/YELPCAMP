@@ -3,10 +3,10 @@
   <h1 class="text-center">Edit Campground</h1>
   <div class="col-6 offset-3">
     <form
-      action="/campground/<%=data._id%>?_method=PUT"
+      action="/campground/<%=campground._id%>?_method=PUT"
       method="POST"
-      class="validated-form"
       novalidate
+      class="validated-form"
     >
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
@@ -15,7 +15,7 @@
           type="text"
           id="title"
           name="title"
-          value="<%=data.title %>"
+          value="<%=campground.title %>"
           required
         />
         <div class="valid-feedback">Looks good!</div>
@@ -27,7 +27,7 @@
           type="text"
           id="location"
           name="location"
-          value="<%=data.location %>"
+          value="<%=campground.location %>"
           required
         />
         <div class="valid-feedback">Looks good!</div>
@@ -39,7 +39,7 @@
           type="text"
           id="image"
           name="img"
-          value="<%=data.img %>"
+          value="<%=campground.img %>"
           required
         />
         <div class="valid-feedback">Looks good!</div>
@@ -56,7 +56,7 @@
             aria-label="price"
             aria-describedby="price-label"
             name="price"
-            value="<%=data.price %>"
+            value="<%=campground.price %>"
             required
           />
           <div class="valid-feedback">Looks good!</div>
@@ -72,7 +72,7 @@
           name="description"
           required
         >
-        <%= data.description%></textarea
+        <%=campground.description%></textarea
         >
         <div class="valid-feedback">Looks good!</div>
       </div>
@@ -80,6 +80,6 @@
         <button class="btn btn-info">Update Campground</button>
       </div>
     </form>
-    <a href="/campgrounds/<%= data._id%>">Back To Campground</a>
+    <a href="/campgrounds/<%= campground._id%>">Back To Campground</a>
   </div>
 </div>
