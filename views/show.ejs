@@ -1,26 +1,87 @@
 <% layout('layouts/boilerplate')%>
 
 <div class="row">
-    <div class="col-6 offset-3">
-        <div class="card mb-3">
-            <img src="<%=info.img%>" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title"><%= info.title%></h5>
-                <p class="card-text"><%= info.description%></p>
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item text-muted"><%= info.location%></li>
-                <li class="list-group-item">$<%= info.price%>/night</li>
-            </ul>
-            <div class="card-body">
-                <a class="card-link btn btn-info" href="/campground/<%=info._id%>/edit">Edit</a>
-                <form class="d-inline" action="/campground/<%=info._id%>/delete?_method=DELETE" method="POST">
-                    <button class="btn btn-danger">Delete</button>
-                </form>
-            </div>
-            <div class="card-footer text-muted">
-                2 days ago
-            </div>
-        </div>
+  <div class="col-6">
+    <div class="card mb-3">
+      <img src="<%=campground.img%>" class="card-img-top" alt="..." />
+      <div class="card-body">
+        <h5 class="card-title"><%= campground.title%></h5>
+        <p class="card-text"><%= campground.description%></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted"><%= campground.location%></li>
+        <li class="list-group-item">$<%= campground.price%>/night</li>
+      </ul>
+      <div class="card-body">
+        <a
+          class="card-link btn btn-info"
+          href="/campground/<%=campground._id%>/edit"
+          >Edit</a
+        >
+        <form
+          class="d-inline"
+          action="/campground/<%=campground._id%>/delete?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+      <div class="card-footer text-muted">2 days ago</div>
     </div>
+  </div>
+  <div class="col-6">
+    <h4>Leave a rating:</h4>
+    <form
+      action="/campground/<%=campground._id%>/reviews"
+      class="mb-3 mt-3 validated-form"
+      method="POST"
+      novalidate
+    >
+      <div>
+        <div>
+          <label for="rating" class="form-label">Rating :</label>
+          <input
+            type="range"
+            id="rating"
+            name="review[rating]"
+            min="1"
+            max="5"
+            step="1"
+            class="form-range"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="body" class="form-label">Review :</label>
+          <br />
+          <textarea
+            name="review[body]"
+            id="body"
+            cols="30"
+            rows="3"
+            class="form-control"
+            required
+          ></textarea>
+          <div class="valid-feedback">Looks good!</div>
+        </div>
+
+        <div>
+          <button class="btn btn-success">Submit</button>
+        </div>
+      </div>
+    </form>
+    <% for(let review of campground.reviews){ %>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Rating : <%= review.rating %></h5>
+        <p class="card-text">Review : <%= review.body %></p>
+        <form
+          action="/campground/<%= campground._id %>/reviews/<%= review._id %>/delete?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-sm btn-danger">DELETE</button>
+        </form>
+      </div>
+    </div>
+    <% } %>
+  </div>
 </div>
