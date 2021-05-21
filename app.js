@@ -2,29 +2,65 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const mongoose = require("mongoose");
-const Campground = require("./models/campground");
 const methodOverride = require("method-override");
-const ExpressError = require("./utility/ExpressError");
 const ejsMate = require("ejs-mate");
-const {
-  campgroundSchema,
-  reviewValSchema,
-} = require("./validationSchema/validationSchema");
-const reviewSchema = require("./models/review");
-
-const catchAsync = require("./utility/catchAsync");
+const campgroundRoute = require("./routes/campground");
+const reviewRoute = require("./routes/reviews");
+const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const User = require("./models/user");
+const UserRoute = require("./routes/users");
 
 app.engine("ejs", ejsMate);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs"); // for template
+app.set("views", path.join(__dirname, "views")); // path is used so that we can call it from any where
+app.use(express.urlencoded({ extended: true })); // TO BE ABLE TO READ FORM DATA
+app.use(methodOverride("_method")); // TO SEND POST PATCH AND DELETE REQ FROM A FORM _method can be anythingwewant
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
+// SESSION CONFIG
+const sessionConfig = {
+  secret: "setAGoodSecretInProduction",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  },
+};
+app.use(session(sessionConfig));
+
+//flash
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
+//  **************************************** Routes ************************************************************
+
+app.use("/", UserRoute);
+app.use("/campground/:id/reviews", reviewRoute);
+app.use("/campground", campgroundRoute);
+
+// ------------------------------------------------------------------------------------------------------------
 
 mongoose.connect("mongodb://localhost/yelpcamp", {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 
 const db = mongoose.connection;
@@ -33,128 +69,17 @@ db.once("open", function () {
   console.log("conneced to mongoose");
 });
 
-app.listen(3000, () => {
-  console.log("Listening to server 3000");
-});
-
+// Home page
 app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get(
-  "/campground",
-  catchAsync(async (req, res) => {
-    const campgrounds = await Campground.find({});
-    res.render("campground", { campgrounds });
-  })
-);
-
-app.get("/campground/new", (req, res) => {
-  res.render("newCampground");
+app.listen(3000, () => {
+  console.log("Listening to server 3000");
 });
 
-const validateForm = (req, res, next) => {
-  const result = campgroundSchema.validate(req.body);
-  const { error } = result;
-  if (error) {
-    throw new ExpressError(error.message, 400);
-  } else {
-    next();
-  }
-};
-
-const ValidateReview = (req, res, next) => {
-  const { error } = reviewValSchema.validate(req.body);
-  if (error) {
-    throw new ExpressError(error.message, 404);
-  } else {
-    next();
-  }
-};
-
-app.post(
-  "/campground",
-  validateForm,
-  catchAsync(async (req, res, next) => {
-    const campground = new Campground(req.body);
-    await campground.save();
-    res.redirect(`campground/${campground._id}`);
-  })
-);
-
-app.get(
-  "/campground/:id",
-  catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id).populate(
-      "reviews"
-    );
-    res.render("show", { campground });
-  })
-);
-
-app.get(
-  "/campground/:id/edit",
-  catchAsync(async (req, res, next) => {
-    const id = req.params.id;
-    const campground = await Campground.findById(id);
-    res.render("edit", { campground });
-  })
-);
-
-app.put(
-  "/campground/:id",
-  validateForm,
-  catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const campground = await Campground.findByIdAndUpdate(
-      id,
-      { ...req.body },
-      { useFindAndModify: false }
-    );
-    res.redirect(`/campground/${id}`);
-  })
-);
-
-app.post(
-  "/campground/:id/reviews",
-  ValidateReview,
-  catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    const review = new reviewSchema(req.body.review);
-    campground.reviews.push(review);
-    await review.save();
-    await campground.save();
-    res.redirect(`/campground/${campground._id}`);
-  })
-);
-
-app.delete(
-  "/campground/:id/delete",
-  catchAsync(async (req, res) => {
-    const campground = await Campground.findByIdAndDelete(req.params.id);
-    res.redirect("/campground");
-  })
-);
-
-app.delete(
-  "/campground/:campId/reviews/:reviewId/delete",
-  catchAsync(async (req, res) => {
-    const { campId, reviewId } = req.params;
-    await Campground.findByIdAndUpdate(campId, {
-      $pull: { reviews: reviewId },
-    });
-    await reviewSchema.findByIdAndDelete(reviewId);
-    res.redirect(`/campground/${campId}`);
-  })
-);
-
-app.all("*", (req, res, next) => {
-  next(new ExpressError("Page Not Found", 404));
-});
-
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message = "Something went wrong" } = err;
-  if (!err.message) err.message = "Oh No, Something went wrong";
-  res.status(statusCode);
-  res.render("error", { err });
-});
+// app.get("/fakeuser", async (req, res) => {
+//   const user = new User({ email: "asd@gmail.com", username: "Qwerty" });
+//   const newUser = await User.register(user, "hello");
+//   res.send(newUser);
+// });
