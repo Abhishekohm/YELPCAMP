@@ -5,7 +5,6 @@ const ExpressError = require("./../utility/ExpressError");
 const reviewSchema = require("./../models/review");
 const Campground = require("./../models/campground");
 const { ValidateReview, isReviewAuthor, isLoggedIn } = require("../middleware");
-const methodOverride = require("method-override");
 
 router.post(
   "/",

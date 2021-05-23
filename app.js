@@ -51,8 +51,8 @@ app.use((req, res, next) => {
 //  **************************************** Routes ************************************************************
 
 app.use("/", UserRoute);
-app.use("/campground/:id/reviews", reviewRoute);
 app.use("/campground", campgroundRoute);
+app.use("/campground/:id/reviews", reviewRoute);
 
 // ------------------------------------------------------------------------------------------------------------
 

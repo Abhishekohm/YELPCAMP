@@ -1,15 +1,22 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+const cloudinary = require("cloudinary").v2;
 const express = require("express");
 const router = express.Router();
 const Campground = require("./../models/campground");
-const reviewSchema = require("./../models/review");
 const methodOverride = require("method-override");
-const { campgroundSchema } = require("./../validationSchema/validationSchema");
 const ExpressError = require("./../utility/ExpressError");
 const catchAsync = require("./../utility/catchAsync");
 router.use(express.urlencoded({ extended: true }));
 router.use(methodOverride("_method"));
 const { isLoggedIn, isAuthor, validateForm } = require("../middleware");
 const { findByIdAndUpdate } = require("./../models/review");
+
+// uploading images
+const { storage } = require("../cloudinary");
+const multer = require("multer");
+const upload = multer({ storage });
 
 router.get(
   "/all",
@@ -24,11 +31,16 @@ router.get("/new", isLoggedIn, (req, res) => {
 });
 
 router.post(
-  "/",
+  "/all",
   isLoggedIn,
+  upload.array("img"),
   validateForm,
   catchAsync(async (req, res, next) => {
     let campground = new Campground(req.body);
+    campground.img = req.files.map((f) => ({
+      url: f.path,
+      filename: f.filename,
+    }));
     campground.author = req.user._id;
     campground = await campground.save();
     req.flash("success", "SUCESSFULLY CREATED A CAMPGROUND");
@@ -47,7 +59,6 @@ router.get(
         },
       })
       .populate("author");
-    console.log(campground);
     if (!campground) {
       req.flash("error", "CANNOT FIND THIS CAMPGROUND");
       res.redirect("./all");
@@ -74,12 +85,25 @@ router.get(
 
 router.put(
   "/:id",
-  validateForm,
+  isLoggedIn,
   isAuthor,
+  upload.array("img"),
+  validateForm,
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    const campground = await Campground.findById(id);
-    await findByIdAndUpdate(id, { ...req.body });
+    console.log("body-", req.body);
+    const campground = await Campground.findByIdAndUpdate(id, { ...req.body });
+    const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
+    campground.img.push(...imgs);
+    await campground.save();
+    if (req.body.deleteImages) {
+      for (let filename of req.body.deleteImages) {
+        await cloudinary.uploader.destroy(filename);
+      }
+      await campground.updateOne({
+        $pull: { img: { filename: { $in: req.body.deleteImages } } },
+      });
+    }
     req.flash("success", "SUCCESSFULLY UPDATED A CAMPGROUND");
     res.redirect(`/campground/${id}`);
   })

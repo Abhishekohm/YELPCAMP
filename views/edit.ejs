@@ -7,6 +7,7 @@
       method="POST"
       novalidate
       class="validated-form"
+      enctype="multipart/form-data"
     >
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
@@ -33,16 +34,7 @@
         <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
-        <label class="form-label" for="image">Image Url</label>
-        <input
-          class="form-control"
-          type="text"
-          id="image"
-          name="img"
-          value="<%=campground.img %>"
-          required
-        />
-        <div class="valid-feedback">Looks good!</div>
+        <input type="file" name="img" multiple />
       </div>
       <div class="mb-3">
         <label class="form-label" for="price">Campground Price</label>
@@ -75,6 +67,20 @@
         <%=campground.description%></textarea
         >
         <div class="valid-feedback">Looks good!</div>
+      </div>
+      <div class="mb-3">
+        <% campground.img.forEach(function(image, i) { %>
+        <img src="<%=image.thumbnail %>" class="img-thumbnail" alt="" />
+        <div class="form-check-inline">
+          <input
+            type="checkbox"
+            id="image-<%=i%>"
+            name="deleteImages[]"
+            value="<%=image.filename%>"
+          />
+        </div>
+        <label for="image-<%=i%>">Delete?</label>
+        <% })%>
       </div>
       <div class="mb-3">
         <button class="btn btn-info">Update Campground</button>

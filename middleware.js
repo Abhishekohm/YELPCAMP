@@ -2,6 +2,7 @@ const Campground = require("./models/campground");
 const ExpressError = require("./utility/ExpressError");
 const {
   campgroundSchema,
+  campgroundSchemaImg,
   reviewValSchema,
 } = require("./validationSchema/validationSchema");
 const Review = require("./models/review");
@@ -28,6 +29,7 @@ module.exports.isAuthor = async (req, res, next) => {
 
 module.exports.validateForm = (req, res, next) => {
   const result = campgroundSchema.validate(req.body);
+  const resImg = campgroundSchemaImg.validate(req.files);
   const { error } = result;
   if (error) {
     throw new ExpressError(error.message, 400);

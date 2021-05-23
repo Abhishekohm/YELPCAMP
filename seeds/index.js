@@ -20,7 +20,16 @@ const dataSeeding = async () => {
   await Campground.deleteMany({});
   for (let i = 0; i < 50; i++) {
     const data = new Campground({
-      img: "https://source.unsplash.com/collection/483251/1200x900",
+      img: [
+        {
+          url: "https://res.cloudinary.com/abhishekprivatelimited/image/upload/v1621746080/Yelpcamp/icngdnfgk4sk8mbvximw.jpg",
+          filename: "Yelpcamp/icngdnfgk4sk8mbvximw",
+        },
+        {
+          url: "https://res.cloudinary.com/abhishekprivatelimited/image/upload/v1621744570/Yelpcamp/yi36w83s7qc7ut8km612.jpg",
+          filename: "Yelpcamp/yi36w83s7qc7ut8km612",
+        },
+      ],
       title: `${descriptors[Math.floor(Math.random() * 15)]} ${
         places[Math.floor(Math.random() * 15)]
       }`,
