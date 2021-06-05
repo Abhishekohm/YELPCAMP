@@ -16,6 +16,7 @@ const localStrategy = require("passport-local");
 const User = require("./models/user");
 const UserRoute = require("./routes/users");
 const sanitize = require("express-mongo-sanitize");
+const MongoStore = require("connect-mongo");
 
 app.engine("ejs", ejsMate); ///for boilerPlate
 app.set("view engine", "ejs"); // for template
@@ -74,9 +75,28 @@ app.use(sanitize());
 // );
 
 // SESSION CONFIG
+
+// const store = new MongoStore({
+//   url: "mongodb://localhost/yelpcamp",
+//   secret: "thisismeanttobeasecretsodontreadit",
+//   touchAfter: 24 * 60 * 60,
+// });
+
+// store.on("error", (e) => {
+//   console.log("error", e);
+// });
+
+const dbUrl = process.env.DB_URL || "mongodb://localhost/yelpcamp";
+const secret = process.env.Secret || "thisismeanttobeasecretsodontreadit";
+
 const sessionConfig = {
+  store: MongoStore.create({
+    mongoUrl: dbUrl,
+    secret,
+    touchAfter: 24 * 60 * 60,
+  }),
   name: "session",
-  secret: "setAGoodSecretInProduction",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -111,6 +131,8 @@ app.use("/campground", campgroundRoute);
 
 // ------------------------------------------------------------------------------------------------------------
 
+const dbUrl = process.env.DB_URL;
+// "mongodb://localhost/yelpcamp"
 mongoose.connect("mongodb://localhost/yelpcamp", {
   useNewUrlParser: true,
   useCreateIndex: true,
