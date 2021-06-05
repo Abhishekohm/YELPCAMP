@@ -131,9 +131,8 @@ app.use("/campground", campgroundRoute);
 
 // ------------------------------------------------------------------------------------------------------------
 
-const dbUrl = process.env.DB_URL;
 // "mongodb://localhost/yelpcamp"
-mongoose.connect("mongodb://localhost/yelpcamp", {
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -151,6 +150,8 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.listen(3000, () => {
-  console.log("Listening to server 3000");
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log(`Listening to server ${port}`);
 });
