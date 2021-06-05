@@ -1,6 +1,3 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
 const cloudinary = require("cloudinary").v2;
 const express = require("express");
 const router = express.Router();
@@ -11,7 +8,10 @@ const catchAsync = require("./../utility/catchAsync");
 router.use(express.urlencoded({ extended: true }));
 router.use(methodOverride("_method"));
 const { isLoggedIn, isAuthor, validateForm } = require("../middleware");
-const { findByIdAndUpdate } = require("./../models/review");
+
+//geocoding
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
+const geocoder = mbxGeocoding({ accessToken: process.env.MapBox_Token });
 
 // uploading images
 const { storage } = require("../cloudinary");
@@ -36,13 +36,21 @@ router.post(
   upload.array("img"),
   validateForm,
   catchAsync(async (req, res, next) => {
+    const geoData = await geocoder
+      .forwardGeocode({
+        query: req.body.location,
+        limit: 1,
+      })
+      .send();
     let campground = new Campground(req.body);
     campground.img = req.files.map((f) => ({
       url: f.path,
       filename: f.filename,
     }));
+    campground.geometry = geoData.body.features[0].geometry;
     campground.author = req.user._id;
     campground = await campground.save();
+    console.log(campground);
     req.flash("success", "SUCESSFULLY CREATED A CAMPGROUND");
     res.redirect(`/campground/${campground._id}`);
   })

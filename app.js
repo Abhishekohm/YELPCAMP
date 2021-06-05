@@ -1,3 +1,6 @@
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -12,16 +15,67 @@ const passport = require("passport");
 const localStrategy = require("passport-local");
 const User = require("./models/user");
 const UserRoute = require("./routes/users");
+const sanitize = require("express-mongo-sanitize");
 
-app.engine("ejs", ejsMate);
+app.engine("ejs", ejsMate); ///for boilerPlate
 app.set("view engine", "ejs"); // for template
 app.set("views", path.join(__dirname, "views")); // path is used so that we can call it from any where
 app.use(express.urlencoded({ extended: true })); // TO BE ABLE TO READ FORM DATA
 app.use(methodOverride("_method")); // TO SEND POST PATCH AND DELETE REQ FROM A FORM _method can be anythingwewant
 app.use(express.static(path.join(__dirname, "public")));
+app.use(sanitize());
+
+//HELMET
+
+// app.use(helmet());
+
+// const scriptSrcUrls = [
+//   "https://stackpath.bootstrapcdn.com/",
+//   "https://api.tiles.mapbox.com/",
+//   "https://api.mapbox.com/",
+//   "https://kit.fontawesome.com/",
+//   "https://cdnjs.cloudflare.com/",
+//   "https://cdn.jsdelivr.net",
+// ];
+// const styleSrcUrls = [
+//   "https://kit-free.fontawesome.com/",
+//   "https://stackpath.bootstrapcdn.com/",
+//   "https://api.mapbox.com/",
+//   "https://api.tiles.mapbox.com/",
+//   "https://fonts.googleapis.com/",
+//   "https://use.fontawesome.com/",
+// ];
+// const connectSrcUrls = [
+//   "https://api.mapbox.com/",
+//   "https://a.tiles.mapbox.com/",
+//   "https://b.tiles.mapbox.com/",
+//   "https://events.mapbox.com/",
+// ];
+// const fontSrcUrls = [];
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: [],
+//       connectSrc: ["'self'", ...connectSrcUrls],
+//       scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+//       styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+//       workerSrc: ["'self'", "blob:"],
+//       objectSrc: [],
+//       imgSrc: [
+//         "'self'",
+//         "blob:",
+//         "data:",
+//         "https://res.cloudinary.com/abhishekprivatelimited/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT!
+//         "https://images.unsplash.com/",
+//       ],
+//       fontSrc: ["'self'", ...fontSrcUrls],
+//     },
+//   })
+// );
 
 // SESSION CONFIG
 const sessionConfig = {
+  name: "session",
   secret: "setAGoodSecretInProduction",
   resave: false,
   saveUninitialized: true,
@@ -33,8 +87,9 @@ const sessionConfig = {
 };
 app.use(session(sessionConfig));
 
-//flash
+//passport
 
+// All below unknown methods on userSchema are coming from passport-local-mongoose package
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
@@ -50,9 +105,9 @@ app.use((req, res, next) => {
 });
 //  **************************************** Routes ************************************************************
 
+app.use("/campground/:id/reviews", reviewRoute);
 app.use("/", UserRoute);
 app.use("/campground", campgroundRoute);
-app.use("/campground/:id/reviews", reviewRoute);
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -77,9 +132,3 @@ app.get("/", (req, res) => {
 app.listen(3000, () => {
   console.log("Listening to server 3000");
 });
-
-// app.get("/fakeuser", async (req, res) => {
-//   const user = new User({ email: "asd@gmail.com", username: "Qwerty" });
-//   const newUser = await User.register(user, "hello");
-//   res.send(newUser);
-// });

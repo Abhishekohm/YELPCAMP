@@ -1,79 +1,92 @@
 <% layout('layouts/boilerplate')%>
 <link rel="stylesheet" href="/CSS/starability.css" />
+<style>
+  #marker {
+    background-image: url("https://docs.mapbox.com/mapbox-gl-js/assets/washington-monument.jpg");
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+</style>
 
 <div class="row">
   <div class="col-6">
     <div class="card mb-3">
-      <div
-        id="carouselExampleControls"
-        class="carousel slide"
-        data-bs-ride="carousel"
-      >
-        <div class="carousel-inner">
-          <% for(let i = 0; i < campground.img.length; i++) {%>
-          <div
-            class="carousel-item <%= (i === 0) ? 'active':'' %>"
-            style="height: 500px"
-          >
-            <img
-              src="<%= campground.img[i].url %> "
-              class="d-block w-100"
-              alt="..."
-            />
+      <div id="map" style="width: 100%; height: 300px"></div>
+      <div class="col-12">
+        <div
+          id="carouselExampleControls"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-inner">
+            <% for(let i = 0; i < campground.img.length; i++) {%>
+            <div
+              class="carousel-item <%= (i === 0) ? 'active':'' %>"
+              style="height: 500px"
+            >
+              <img
+                src="<%= campground.img[i].url %> "
+                class="d-block w-100"
+                alt="..."
+              />
+            </div>
+            <% } %>
           </div>
+          <% if(campground.img.length !== 1) {%>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#carouselExampleControls"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
           <% } %>
         </div>
-        <% if(campground.img.length !== 1) {%>
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carouselExampleControls"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carouselExampleControls"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-        <% } %>
-      </div>
-      <div class="card-body">
-        <h5 class="card-title"><%= campground.title%></h5>
-        <p class="card-text"><%= campground.description%></p>
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item text-muted"><%= campground.location%></li>
-        <li class="list-group-item">
-          Shared By - <%= campground.author.username%>
-        </li>
-        <li class="list-group-item">$<%= campground.price%>/night</li>
-      </ul>
-      <% if(currentUser && campground.author.username === currentUser.username)
-      {%>
-      <div class="card-body">
-        <a
-          class="card-link btn btn-info"
-          href="/campground/<%=campground._id%>/edit"
-          >Edit
-        </a>
+        <div class="card-body">
+          <h5 class="card-title"><%= campground.title%></h5>
+          <p class="card-text"><%= campground.description%></p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item text-muted"><%= campground.location%></li>
+          <li class="list-group-item">
+            Shared By - <%= campground.author.username%>
+          </li>
+          <li class="list-group-item">$<%= campground.price%>/night</li>
+        </ul>
+        <% if(currentUser && campground.author.username ===
+        currentUser.username) {%>
+        <div class="card-body">
+          <a
+            class="card-link btn btn-info"
+            href="/campground/<%=campground._id%>/edit"
+            >Edit
+          </a>
 
-        <form
-          class="d-inline"
-          action="/campground/<%=campground._id%>/delete?_method=DELETE"
-          method="POST"
-        >
-          <button class="btn btn-danger">Delete</button>
-        </form>
+          <form
+            class="d-inline"
+            action="/campground/<%=campground._id%>/delete?_method=DELETE"
+            method="POST"
+          >
+            <button class="btn btn-danger">Delete</button>
+          </form>
+        </div>
+        <% } %>
+        <div class="card-footer text-muted">2 days ago</div>
       </div>
-      <% } %>
-      <div class="card-footer text-muted">2 days ago</div>
     </div>
   </div>
   <div class="col-6">
@@ -172,3 +185,9 @@
     <% } %>
   </div>
 </div>
+
+<script>
+  const campground1 = <%- JSON.stringify(campground)%>;
+</script>
+
+<script src="/JSscripts/map.js"></script>

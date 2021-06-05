@@ -19,6 +19,7 @@ db.once("open", function () {
 const dataSeeding = async () => {
   await Campground.deleteMany({});
   for (let i = 0; i < 50; i++) {
+    // const num = Math.floor(Math.random() * 1000);
     const data = new Campground({
       img: [
         {
@@ -30,6 +31,10 @@ const dataSeeding = async () => {
           filename: "Yelpcamp/yi36w83s7qc7ut8km612",
         },
       ],
+      geometry: {
+        coordinates: [cities[i].longitude, cities[i].latitude],
+        type: "Point",
+      },
       title: `${descriptors[Math.floor(Math.random() * 15)]} ${
         places[Math.floor(Math.random() * 15)]
       }`,
