@@ -1,6 +1,6 @@
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYWJoaXNoZWstb2htIiwiYSI6ImNrcDB4ZjBpMjBsMTcycG13anR5MGRrZjkifQ.ElFFJS-tJghFCo4uyltoLQ";
-var map = new mapboxgl.Map({
+const map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/mapbox/dark-v10",
   center: [-103.59179687498357, 40.66995747013945],

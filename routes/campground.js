@@ -8,10 +8,11 @@ const catchAsync = require("./../utility/catchAsync");
 router.use(express.urlencoded({ extended: true }));
 router.use(methodOverride("_method"));
 const { isLoggedIn, isAuthor, validateForm } = require("../middleware");
+const Mapboxaccesstoken = process.env.MAPBOX_TOKEN;
 
 //geocoding
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
-const geocoder = mbxGeocoding({ accessToken: process.env.MapBox_Token });
+const geocoder = mbxGeocoding({ accessToken: Mapboxaccesstoken });
 
 // uploading images
 const { storage } = require("../cloudinary");
