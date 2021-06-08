@@ -1,7 +1,88 @@
-<% layout('layouts/boilerplate') %>
-<div class="root">
-  <div>
-    <h3>Welcome To Yelpcamp!!!</h3>
-    <p>A place to share and know about some beautiful place for camping</p>
-  </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YelpCamp</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="https://etc.usf.edu/presentations/extras/letters/varsity_letters/09/37/Y-400.png"
+    />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/CSS/homepage.css" />
+  </head>
+  <body class="d-flex flex-column vh-100 h-body">
+    <nav class="sticky-top navbar navbar-expand-lg navbar-dark h-navbar">
+      <div class="container-fluid">
+        <h1 class="navbar-brand">YELPCAMP</h1>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" href="/campground/all">Campgrounds</a>
+            <a class="nav-link" href="/campground/new">New Campground</a>
+          </div>
+          <div class="navbar-nav ml-auto">
+            <% if(!currentUser) {%>
+            <a class="nav-link" href="/login">Login</a>
+            <a class="nav-link" href="/register">Register</a>
+            <% } else {%>
+            <a class="nav-link" href="/logout">Logout</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      <%- include('partials/flash') %>
+      <div class="root">
+        <div>
+          <h3>Welcome To Yelpcamp!!!</h3>
+          <p>
+            A place to share and know about some beautiful place for camping
+          </p>
+        </div>
+      </div>
+    </main>
+    <footer class="footer py-3 mt-auto h-navbar">
+      <div class="container">
+        <span class="text-muted">&copy; YelpCamp 2021</span>
+      </div>
+    </footer>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+      integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+      integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+      crossorigin="anonymous"
+    ></script>
+    <script src="/JSscripts/formValidater.js"></script>
+  </body>
+</html>

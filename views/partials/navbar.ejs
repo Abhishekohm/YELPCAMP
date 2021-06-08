@@ -1,6 +1,6 @@
 <nav class="sticky-top navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">YELPCAMP</a>
+    <h1 class="navbar-brand">YELPCAMP</h1>
     <button
       class="navbar-toggler"
       type="button"
@@ -12,13 +12,16 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div
+      class="collapse navbar-collapse d-flex justify-content-between"
+      id="navbarNavAltMarkup"
+    >
       <div class="navbar-nav">
         <a class="nav-link" href="/">Home</a>
         <a class="nav-link" href="/campground/all">Campgrounds</a>
         <a class="nav-link" href="/campground/new">New Campground</a>
       </div>
-      <div class="navbar-nav ml-auto">
+      <div class="navbar-nav mr-2">
         <% if(!currentUser) {%>
         <a class="nav-link" href="/login">Login</a>
         <a class="nav-link" href="/register">Register</a>
