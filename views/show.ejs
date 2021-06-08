@@ -1,5 +1,6 @@
 <% layout('layouts/boilerplate')%>
 <link rel="stylesheet" href="/CSS/starability.css" />
+<link rel="stylesheet" href="/CSS/img-ctn.css" />
 <style>
   #marker {
     background-image: url("https://docs.mapbox.com/mapbox-gl-js/assets/washington-monument.jpg");
@@ -11,50 +12,58 @@
   }
 </style>
 
-<div class="row">
-  <div class="col-6">
+<div class="row d-flex flex-md-row flex-column">
+  <div class="col-md-6 col-12">
     <div class="card mb-3">
       <div id="map" style="width: 100%; height: 300px"></div>
       <div class="col-12">
-        <div
-          id="carouselExampleControls"
-          class="carousel slide"
-          data-bs-ride="carousel"
-        >
-          <div class="carousel-inner">
-            <% for(let i = 0; i < campground.img.length; i++) {%>
-            <div
-              class="carousel-item <%= (i === 0) ? 'active':'' %>"
-              style="height: 500px"
-            >
-              <img
-                src="<%= campground.img[i].url %> "
-                class="d-block w-100"
-                alt="..."
-              />
+        <div class="img-ctn">
+          <div
+            id="carouselExampleControls"
+            class="carousel slide"
+            data-bs-ride="carousel"
+          >
+            <div class="carousel-inner">
+              <% for(let i = 0; i < campground.img.length; i++) {%>
+              <div
+                class="carousel-item <%= (i === 0) ? 'active':'' %>"
+                style="height: 500px"
+              >
+                <img
+                  src="<%= campground.img[i].url %> "
+                  class="d-block w-100"
+                  alt="..."
+                />
+              </div>
+              <% } %>
             </div>
+            <% if(campground.img.length !== 1) {%>
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleControls"
+              data-bs-slide="prev"
+            >
+              <span
+                class="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleControls"
+              data-bs-slide="next"
+            >
+              <span
+                class="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span class="visually-hidden">Next</span>
+            </button>
             <% } %>
           </div>
-          <% if(campground.img.length !== 1) {%>
-          <button
-            class="carousel-control-prev"
-            type="button"
-            data-bs-target="#carouselExampleControls"
-            data-bs-slide="prev"
-          >
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-bs-target="#carouselExampleControls"
-            data-bs-slide="next"
-          >
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-          <% } %>
         </div>
         <div class="card-body">
           <h5 class="card-title"><%= campground.title%></h5>
@@ -89,7 +98,7 @@
       </div>
     </div>
   </div>
-  <div class="col-6">
+  <div class="col-md-6 col-12">
     <%if(currentUser){%>
     <h4>Leave a rating:</h4>
     <form
