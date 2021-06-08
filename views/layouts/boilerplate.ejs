@@ -11,6 +11,7 @@
       integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
       crossorigin="anonymous"
     />
+
     <link
       rel="shortcut icon"
       type="image/png"
@@ -21,11 +22,12 @@
       href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="/CSS/homepage.css" />
   </head>
   <body class="d-flex flex-column vh-100">
     <%- include('../partials/navbar') %>
 
-    <main class="container mt-5">
+    <main class="container">
       <%- include('../partials/flash') %> <%- body %>
     </main>
     <%- include('../partials/footer') %>
