@@ -25,7 +25,6 @@ router.get("/register", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-  console.log("you were here");
   res.render("user/login");
 });
 
@@ -36,7 +35,6 @@ router.post(
     failureRedirect: "/login",
   }),
   (req, res) => {
-    console.log("you were here");
     if (req.session.returnTo) {
       const route = req.session.returnTo;
       delete req.session.returnTo;
