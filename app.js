@@ -132,7 +132,7 @@ app.use("/campground", campgroundRoute);
 // ------------------------------------------------------------------------------------------------------------
 
 // "mongodb://localhost/yelpcamp"
-mongoose.connect("mongodb://localhost/yelpcamp", {
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
