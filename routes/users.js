@@ -13,7 +13,6 @@ router.post("/register", async (req, res, next) => {
       req.flash("success", "Created  a new User");
       res.redirect("/campground/all");
     });
-    console.log(newUser);
   } catch (e) {
     req.flash("error", e.message);
     res.redirect("/register");

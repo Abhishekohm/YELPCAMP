@@ -51,7 +51,6 @@ router.post(
     campground.geometry = geoData.body.features[0].geometry;
     campground.author = req.user._id;
     campground = await campground.save();
-    console.log(campground);
     req.flash("success", "SUCESSFULLY CREATED A CAMPGROUND");
     res.redirect(`/campground/${campground._id}`);
   })
@@ -72,7 +71,6 @@ router.get(
       req.flash("error", "CANNOT FIND THIS CAMPGROUND");
       res.redirect("./all");
     }
-    console.log(campground);
     res.render("show", { campground });
   })
 );
@@ -100,7 +98,6 @@ router.put(
   validateForm,
   catchAsync(async (req, res) => {
     const { id } = req.params;
-    console.log("body-", req.body);
     const campground = await Campground.findByIdAndUpdate(id, { ...req.body });
     const imgs = req.files.map((f) => ({ url: f.path, filename: f.filename }));
     campground.img.push(...imgs);

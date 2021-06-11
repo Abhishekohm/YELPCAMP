@@ -112,7 +112,7 @@ map.on("load", function () {
 
     new mapboxgl.Popup()
       .setLngLat(coordinates)
-      .setHTML("Chala ja BSDK")
+      .setHTML("Nice place")
       .addTo(map);
   });
 

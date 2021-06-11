@@ -20,12 +20,13 @@ router.post(
     res.redirect(`/campground/${campground._id}`);
   })
 );
-
-router.delete(
+// localhost:3000/campground/60b9b8ab81d11416e0da8bb0/reviews/60ba246a9426ad1a88b58adf/delete?_method=DELETE
+http: router.delete(
   "/:reviewId/delete",
   isLoggedIn,
   isReviewAuthor,
   catchAsync(async (req, res) => {
+    console.log("you were here");
     const { id, reviewId } = req.params;
     await Campground.findByIdAndUpdate(id, {
       $pull: { reviews: reviewId },
