@@ -91,7 +91,7 @@ const secret = process.env.Secret || "thisismeanttobeasecretsodontreadit";
 
 const sessionConfig = {
   store: MongoStore.create({
-    mongoUrl: "mongodb://localhost/yelpcamp",
+    mongoUrl: dbUrl,
     secret,
     touchAfter: 24 * 60 * 60,
   }),
@@ -132,7 +132,7 @@ app.use("/campground", campgroundRoute);
 // ------------------------------------------------------------------------------------------------------------
 
 // "mongodb://localhost/yelpcamp"
-mongoose.connect("mongodb://localhost/yelpcamp", {
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -152,6 +152,6 @@ app.get("/", (req, res) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log(`Listening to server ${port}`);
 });
