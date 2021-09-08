@@ -2,13 +2,13 @@ mapboxgl.accessToken =
   "pk.eyJ1IjoiYWJoaXNoZWstb2htIiwiYSI6ImNrcDB4ZjBpMjBsMTcycG13anR5MGRrZjkifQ.ElFFJS-tJghFCo4uyltoLQ";
 const map = new mapboxgl.Map({
   container: "map",
-  style: "mapbox://styles/mapbox/light-v10", // stylesheet location
+  style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
   center: campground1.geometry.coordinates, // starting position [lng, lat]
   zoom: 7, // starting zoom
 });
 
 const popup = new mapboxgl.Popup({ offset: 25 }).setText(
-  `Lorem ipsum dolor sit`
+  `${campground1.title}, ${campground1.location}`
 );
 
 const el = document.createElement("div");

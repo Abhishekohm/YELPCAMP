@@ -18,7 +18,7 @@ const UserRoute = require("./routes/users");
 const sanitize = require("express-mongo-sanitize");
 const MongoStore = require("connect-mongo");
 
-app.engine("ejs", ejsMate); ///for boilerPlate
+app.engine("ejs", ejsMate); //for boilerPlate
 app.set("view engine", "ejs"); // for template
 app.set("views", path.join(__dirname, "views")); // path is used so that we can call it from any where
 app.use(express.urlencoded({ extended: true })); // TO BE ABLE TO READ FORM DATA
@@ -132,7 +132,7 @@ app.use("/campground", campgroundRoute);
 // ------------------------------------------------------------------------------------------------------------
 
 // "mongodb://localhost/yelpcamp"
-mongoose.connect(dbUrl, {
+mongoose.connect("mongodb://localhost/yelpcamp", {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,

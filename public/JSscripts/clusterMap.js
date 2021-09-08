@@ -3,7 +3,7 @@ mapboxgl.accessToken =
 const map = new mapboxgl.Map({
   container: "map",
   style: "mapbox://styles/mapbox/dark-v10",
-  center: [-103.59179687498357, 40.66995747013945],
+  center: [72.88261, 19.07283],
   zoom: 3,
 });
 
@@ -94,15 +94,7 @@ map.on("load", function () {
   // description HTML from its properties.
   map.on("click", "unclustered-point", function (e) {
     var coordinates = e.features[0].geometry.coordinates.slice();
-    var mag = e.features[0].properties.mag;
-    var tsunami;
-
-    if (e.features[0].properties.tsunami === 1) {
-      tsunami = "yes";
-    } else {
-      tsunami = "no";
-    }
-
+    console.log(e.features[0]);
     // Ensure that if the map is zoomed out such that
     // multiple copies of the feature are visible, the
     // popup appears over the copy being pointed to.
@@ -110,10 +102,7 @@ map.on("load", function () {
       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
-    new mapboxgl.Popup()
-      .setLngLat(coordinates)
-      .setHTML("Nice place")
-      .addTo(map);
+    new mapboxgl.Popup().setLngLat(coordinates).setHTML(`${e}`).addTo(map);
   });
 
   map.on("mouseenter", "clusters", function () {
